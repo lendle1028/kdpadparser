@@ -3,4 +3,8 @@ class ConstExpression extends Expression{
         super(Expression.TYPE_CONST, ownerBlock)
         this.value=value;
     }
+
+    eval(){
+        return this.value;
+    }
 }

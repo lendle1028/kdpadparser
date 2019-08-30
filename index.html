@@ -1,13 +1,19 @@
 <html>
 
 <head>
-    <script src="Block.js"></script>
+    <script src="Core.js"></script>
+    <script src="commands/Base.js"></script>
 </head>
 
 <body>
     <script>
         let block=new Block();
-        console.log(Block.UNDEFINED);
+        let print=new PrintCommand("hello", block);
+        let setVar=new SetVarCommand("x", 123, block);
+        print.eval();
+        setVar.eval();
+        let x=new VarExpression("x", block);
+        console.log(x.eval());
     </script>
 </body>
 

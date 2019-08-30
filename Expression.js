@@ -15,4 +15,10 @@ class Expression{
     getOwnerBlock(){
         return this.ownerBlock;
     }
+    /**
+     * should be overridden by sub classes
+     */
+    eval(){
+        return null;
+    }
 }

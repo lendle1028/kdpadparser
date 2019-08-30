@@ -1,8 +1,9 @@
 class Block{
     static UNDEFINED=new Object();
-    constructor(){
+    constructor(parentBlock=null){
         this.variables={};
         this.expressions=new Array();
+        this.parentBlock=parentBlock;
     }
 
     get(varName){
@@ -15,5 +16,9 @@ class Block{
 
     getExpressions(){
         return this.expressions;
+    }
+
+    getParentBlock(){
+        return this.parentBlock;
     }
 }
