@@ -105,11 +105,11 @@ class CommandExpression extends Expression{
 
     evaluate(){
         //eval subExpressions at first
-        if(this.subExpressions!=null){
-            for(let e of this.subExpressions){
-                e.evaluate();
-            }
-        }
+        // if(this.subExpressions!=null){
+        //     for(let e of this.subExpressions){
+        //         e.evaluate();
+        //     }
+        // }
         return this.executeCommand();
     }
 
@@ -142,7 +142,7 @@ class MathExpression extends Expression{
             }
             
         }
-        console.log(newExpression);
+        //console.log(newExpression);
         return eval(newExpression);
     }
 }

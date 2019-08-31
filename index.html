@@ -9,6 +9,8 @@
     <script>
         let block=new Block();
         let print=new PrintCommand("hello", block);
+        let print2=new PrintCommand("hello2", block);
+        let print3=new PrintCommand("hello3", block);
         let setVar=new SetVarCommand("x", 123, block);
         let setVar2=new SetVarCommand("y", "abc", block);
         let setVar3=new SetVarCommand("z", true, block);
@@ -25,6 +27,14 @@
         console.log(mathExp.evaluate());
         mathExp=new MathExpression("x>6", block);
         console.log(mathExp.evaluate());
+
+        let cExp1=new ConditionalCommand(new MathExpression("x>500", block), block, [print, print2, print3], 
+            [
+                new SubConditionalCommand(new MathExpression("x>200", block), block, [print, print2])
+            ],
+            new ElseConditionalCommand(block, [print])
+        );
+        cExp1.evaluate();
     </script>
 </body>
 
