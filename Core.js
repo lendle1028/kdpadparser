@@ -7,6 +7,9 @@ class Block{
     }
 
     get(varName){
+        if(!this.variables[varName] && this.parentBlock){
+            return this.parentBlock.get(varName);
+        }
         return this.variables[varName];
     }
 
@@ -21,12 +24,26 @@ class Block{
     getParentBlock(){
         return this.parentBlock;
     }
+
+    getAllVariableNames(){
+        let array=[];
+        for(let k in this.variables){
+            array.push(k);
+        }
+        if(this.parentBlock){
+            for(let k of this.parentBlock.getAllVariableNames()){
+                array.push(k);
+            }
+        }
+        return array;
+    }
 }
 
 class Expression{
     static TYPE_VAR=0;
     static TYPE_CONST=1;
     static TYPE_COMMAND=2;
+    static TYPE_MATH=3;
 
     constructor(type=Expression.TYPE_VAR, ownerBlock=null){
         this.type=type;
@@ -43,7 +60,7 @@ class Expression{
     /**
      * should be overridden by sub classes
      */
-    eval(){
+    evaluate(){
         return null;
     }
 }
@@ -58,7 +75,7 @@ class VarExpression extends Expression{
         return this.name;
     }
 
-    eval(){
+    evaluate(){
         return this.getOwnerBlock().get(this.name);
     }
 }
@@ -69,14 +86,14 @@ class ConstExpression extends Expression{
         this.value=value;
     }
 
-    eval(){
+    evaluate(){
         return this.value;
     }
 }
 
 class CommandExpression extends Expression{
     constructor(name=null, parameters=null, subExpressions=null, ownerBlock=null){
-        super(Expression.TYPE_COMMAND, ownerBlock)
+        super(Expression.TYPE_COMMAND, ownerBlock);
         this.name=name;
         this.parameters=parameters;
         this.subExpressions=subExpressions;
@@ -86,11 +103,11 @@ class CommandExpression extends Expression{
         return this.name;
     }
 
-    eval(){
+    evaluate(){
         //eval subExpressions at first
         if(this.subExpressions!=null){
             for(let e of this.subExpressions){
-                e.eval();
+                e.evaluate();
             }
         }
         return this.executeCommand();
@@ -100,5 +117,32 @@ class CommandExpression extends Expression{
      * must be overridden by implementations
      */
     executeCommand(){
+    }
+}
+
+class MathExpression extends Expression{
+    constructor(expression, ownerBlock=null){
+        super(Expression.TYPE_MATH, ownerBlock);
+        this.mathExpression=expression;
+    }
+
+    getMathExpression(){
+        return this.mathExpression; 
+    }
+
+    evaluate(){
+        //replace variables to their values
+        let newExpression=this.mathExpression;
+        for(let v of super.getOwnerBlock().getAllVariableNames()){
+            let value=super.getOwnerBlock().get(v);
+            if(typeof(value)=="string"){
+                newExpression=newExpression.replace(v, "\""+super.getOwnerBlock().get(v)+"\"");
+            }else{
+                newExpression=newExpression.replace(v, super.getOwnerBlock().get(v));
+            }
+            
+        }
+        console.log(newExpression);
+        return eval(newExpression);
     }
 }

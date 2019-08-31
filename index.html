@@ -10,10 +10,21 @@
         let block=new Block();
         let print=new PrintCommand("hello", block);
         let setVar=new SetVarCommand("x", 123, block);
-        print.eval();
-        setVar.eval();
+        let setVar2=new SetVarCommand("y", "abc", block);
+        let setVar3=new SetVarCommand("z", true, block);
+        print.evaluate();
+        setVar.evaluate();
+        setVar2.evaluate();
+        setVar3.evaluate();
         let x=new VarExpression("x", block);
-        console.log(x.eval());
+        console.log(x.evaluate());
+        // let s="xAc+5-a+6";
+        // console.log(s.match(/[a-zA-Z]+/gi));
+        console.log(block.getAllVariableNames());
+        let mathExp=new MathExpression("x+(5+y)+z", block);
+        console.log(mathExp.evaluate());
+        mathExp=new MathExpression("x>6", block);
+        console.log(mathExp.evaluate());
     </script>
 </body>
 
