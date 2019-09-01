@@ -92,11 +92,9 @@ class ConstExpression extends Expression{
 }
 
 class CommandExpression extends Expression{
-    constructor(name=null, parameters=null, subExpressions=null, ownerBlock=null){
+    constructor(name=null, ownerBlock=null){
         super(Expression.TYPE_COMMAND, ownerBlock);
         this.name=name;
-        this.parameters=parameters;
-        this.subExpressions=subExpressions;
     }
 
     getName(){
@@ -117,6 +115,21 @@ class CommandExpression extends Expression{
      * must be overridden by implementations
      */
     executeCommand(){
+    }
+}
+
+class MainCommand extends CommandExpression{
+    constructor(subExpressions=null, ownerBlock=null){
+        super("主程式", ownerBlock);
+        this.subExpressions=subExpressions;
+    }
+
+    executeCommand(){
+        if(this.subExpressions){
+            for(let s of this.subExpressions){
+                s.executeCommand();
+            }
+        }
     }
 }
 

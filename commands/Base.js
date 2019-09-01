@@ -1,6 +1,6 @@
 class PrintCommand extends CommandExpression{
     constructor(message=null, ownerBlock=null){
-        super("印出", new Array(message), null, ownerBlock);
+        super("印出", ownerBlock);
         this.message=message;
     }
 
@@ -15,7 +15,7 @@ class PrintCommand extends CommandExpression{
 
 class SetVarCommand extends CommandExpression{
     constructor(varName=null, value=null, ownerBlock=null){
-        super("設定", new Array(value), null, ownerBlock);
+        super("設定", ownerBlock);
         this.value=value;
         this.varName=varName;
     }
@@ -27,7 +27,7 @@ class SetVarCommand extends CommandExpression{
 
 class ConditionalCommand extends CommandExpression{
     constructor(conditionExpression, ownerBlock=null, subExpressions=null, subConditions=null, elseCondition=null, name="假若"){
-        super(name, null, null, ownerBlock);
+        super(name, ownerBlock);
         this.conditionExpression=conditionExpression;
         this.subExpressions=subExpressions;
         this.subConditions=subConditions;
@@ -67,7 +67,7 @@ class SubConditionalCommand extends ConditionalCommand{
 
 class ElseConditionalCommand extends CommandExpression{
     constructor(ownerBlock=null, subExpressions=null){
-        super("否則", null, subExpressions, ownerBlock);
+        super("否則", ownerBlock);
         this.subExpressions=subExpressions;
     }
 
