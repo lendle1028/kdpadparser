@@ -3,6 +3,7 @@
 <head>
     <script src="Core.js"></script>
     <script src="commands/Base.js"></script>
+    <script src="tools/Parser.js"></script>
 </head>
 
 <body>
@@ -35,6 +36,7 @@
             new ElseConditionalCommand(block, [print])
         );
         cExp1.evaluate();
+        console.log(Parser.countPrefixWhiteSpaces("   \tabc"));
     </script>
 </body>
 

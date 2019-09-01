@@ -95,10 +95,15 @@ class CommandExpression extends Expression{
     constructor(name=null, ownerBlock=null){
         super(Expression.TYPE_COMMAND, ownerBlock);
         this.name=name;
+        this.subExpressions=[];
     }
 
     getName(){
         return this.name;
+    }
+
+    getSubExpressions(){
+        return this.subExpressions;
     }
 
     evaluate(){

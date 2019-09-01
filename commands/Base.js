@@ -29,7 +29,9 @@ class ConditionalCommand extends CommandExpression{
     constructor(conditionExpression, ownerBlock=null, subExpressions=null, subConditions=null, elseCondition=null, name="假若"){
         super(name, ownerBlock);
         this.conditionExpression=conditionExpression;
-        this.subExpressions=subExpressions;
+        if(subExpressions){
+            super.getSubExpressions().push(...subExpressions);
+        }
         this.subConditions=subConditions;
         this.elseCondition=elseCondition;
     }
@@ -39,8 +41,8 @@ class ConditionalCommand extends CommandExpression{
      */
     executeCommand(){
         if(this.conditionExpression!=null && this.conditionExpression.evaluate()){
-            if(this.subExpressions){
-                for(let exp of this.subExpressions){
+            if(super.getSubExpressions()){
+                for(let exp of super.getSubExpressions()){
                     exp.executeCommand();
                 }
             }
@@ -68,11 +70,13 @@ class SubConditionalCommand extends ConditionalCommand{
 class ElseConditionalCommand extends CommandExpression{
     constructor(ownerBlock=null, subExpressions=null){
         super("否則", ownerBlock);
-        this.subExpressions=subExpressions;
+        if(subExpressions){
+            super.getSubExpressions().push(...subExpressions);
+        }
     }
 
     executeCommand(){
-        for(let exp of this.subExpressions){
+        for(let exp of super.getSubExpressions()){
             exp.executeCommand();
         }
         return true;
