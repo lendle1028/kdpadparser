@@ -36,7 +36,8 @@
             new ElseConditionalCommand(block, [print])
         );
         cExp1.evaluate();
-        console.log(Parser.countPrefixWhiteSpaces("   \tabc"));
+        let parser=new Parser();
+        parser.parse("設定 x,10\n印出 \"abc\"");
     </script>
 </body>
 
