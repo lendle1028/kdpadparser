@@ -37,7 +37,7 @@
         );
         cExp1.evaluate();
         let parser=new Parser();
-        parser.parse("設定 x,10\n印出 \"abc\"");
+        let node=parser.parse("主程式\n\t設定 x,10\n\t\t測試 1,2,3\n\t印出 \"abc\"");
     </script>
 </body>
 
