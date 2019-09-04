@@ -37,7 +37,8 @@ class Parser{
         }else if(code.indexOf("+")==-1 && code.indexOf("-")==-1 &&
             code.indexOf("*")==-1 && code.indexOf("/")==-1 &&
             code.indexOf("=")==-1 && code.indexOf(">")==-1 &&
-            code.indexOf("<")==-1){
+            code.indexOf("<")==-1 && code.indexOf("true")==-1 &&
+            code.indexOf("false")==-1){
             return new VarExpression(code, ownerBlock);
         }
         //console.log("ownerBlock="+ownerBlock);
