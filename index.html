@@ -4,40 +4,44 @@
     <script src="Core.js"></script>
     <script src="commands/Base.js"></script>
     <script src="tools/Parser.js"></script>
+    <script src="tools/BaseCommandParser.js"></script>
 </head>
 
 <body>
     <script>
-        let block=new Block();
-        let print=new PrintCommand("hello", block);
-        let print2=new PrintCommand("hello2", block);
-        let print3=new PrintCommand("hello3", block);
-        let setVar=new SetVarCommand("x", 123, block);
-        let setVar2=new SetVarCommand("y", "abc", block);
-        let setVar3=new SetVarCommand("z", true, block);
-        print.evaluate();
-        setVar.evaluate();
-        setVar2.evaluate();
-        setVar3.evaluate();
-        let x=new VarExpression("x", block);
-        console.log(x.evaluate());
-        // let s="xAc+5-a+6";
-        // console.log(s.match(/[a-zA-Z]+/gi));
-        console.log(block.getAllVariableNames());
-        let mathExp=new MathExpression("x+(5+y)+z", block);
-        console.log(mathExp.evaluate());
-        mathExp=new MathExpression("x>6", block);
-        console.log(mathExp.evaluate());
+        // let block=new Block();
+        // let print=new PrintCommand("hello", block);
+        // let print2=new PrintCommand("hello2", block);
+        // let print3=new PrintCommand("hello3", block);
+        // let setVar=new SetVarCommand("x", 123, block);
+        // let setVar2=new SetVarCommand("y", "abc", block);
+        // let setVar3=new SetVarCommand("z", true, block);
+        // print.evaluate();
+        // setVar.evaluate();
+        // setVar2.evaluate();
+        // setVar3.evaluate();
+        // let x=new VarExpression("x", block);
+        // console.log(x.evaluate());
+        // // let s="xAc+5-a+6";
+        // // console.log(s.match(/[a-zA-Z]+/gi));
+        // console.log(block.getAllVariableNames());
+        // let mathExp=new MathExpression("x+(5+y)+z", block);
+        // console.log(mathExp.evaluate());
+        // mathExp=new MathExpression("x>6", block);
+        // console.log(mathExp.evaluate());
 
-        let cExp1=new ConditionalCommand(new MathExpression("x>500", block), block, [print, print2, print3], 
-            [
-                new SubConditionalCommand(new MathExpression("x>200", block), block, [print, print2])
-            ],
-            new ElseConditionalCommand(block, [print])
-        );
-        cExp1.evaluate();
+        // let cExp1=new ConditionalCommand(new MathExpression("x>500", block), block, [print, print2, print3], 
+        //     [
+        //         new SubConditionalCommand(new MathExpression("x>200", block), block, [print, print2])
+        //     ],
+        //     new ElseConditionalCommand(block, [print])
+        // );
+        // cExp1.evaluate();
         let parser=new Parser();
-        let node=parser.parse("主程式\n\t設定 x,10\n\t\t測試 1,2,3\n\t印出 \"abc\"");
+        //let node=parser.parse("主程式\n\t設定 x,10\n\t\t印出 123\n\t印出 \"abc\"");
+        let node=parser.parse("主程式\n\t設定 x,10\n\t印出 x\n\t假如 x>5\n\t\t印出 \"A\"\n\t否則\n\t\t印出 \"B\"");
+        console.log(node);
+        node.evaluate();
     </script>
 </body>
 

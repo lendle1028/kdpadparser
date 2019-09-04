@@ -1,7 +1,7 @@
 class Parser{
     constructor(){
-        this.codeContainerStack=new Array();
-        this.blockStack=new Array();
+        this.block=new Block();
+        this.baseCommandParser=new BaseCommandParser();
     }
 
     /**
@@ -11,18 +11,36 @@ class Parser{
         let codeStringList=codeString.split(/\n/);
         let emptyRoot=new ParserTreeNode(null);
         let codeTree=this.parseCodeTree(codeStringList, emptyRoot);
-        console.log(codeTree.toString());
+        //console.log(codeTree.toString());
         let ret=new Array();
-        for(let c of codeTree.getChildNodes){
-            let exp=this.parseCommandExpression(c);
+        let index=0;
+        for(let c of emptyRoot.getChildNodes()){
+            let exp=this.parseCommandExpression(c, index++, this.block);
             ret.push(exp);
         }
+        //console.log(ret);
         return ret;
     }
 
-    parseCommandExpression(codeTreeNode){
-        
-        return null;
+    parseCommandExpression(codeTreeNode, indexInChildNodes, ownerBlock){
+        return this.baseCommandParser.parseCommandExpression(
+            codeTreeNode.getCommandArray(), this, this, codeTreeNode, indexInChildNodes, ownerBlock
+        );
+    }
+
+    parseValueExpression(code, ownerBlock){
+        code=code.trim();
+        if(code.indexOf("\"")==0){
+            return new ConstExpression(code, ownerBlock);
+        }else if(!isNaN(parseFloat(code))){
+            return new ConstExpression(code, ownerBlock);
+        }else if(code.indexOf("+")==-1 && code.indexOf("-")==-1 &&
+            code.indexOf("*")==-1 && code.indexOf("/")==-1 &&
+            code.indexOf("=")==-1 && code.indexOf(">")==-1 &&
+            code.indexOf("<")==-1){
+            return new VarExpression(code, ownerBlock);
+        }
+        return new MathExpression(code, ownerBlock);
     }
 
     parseCodeTree(codeLines, rootNode){        
@@ -77,6 +95,43 @@ class ParserTreeNode{
         this.parentNode=null;
         this.childNodes=[];
         this.line=line;
+        this.parsed=false;
+        this.commandArray=this.toCommandAndArgs(line);
+    }
+
+    /**
+     * separate a codeString into an array in which
+     * the first element is always the command itself
+     * and the remaining elements are the args
+     * @param {*} codeString 
+     */
+    toCommandAndArgs(codeString){
+        if(codeString==null){
+            return [];
+        }
+        let index=codeString.indexOf(" ");
+        let ret=(index!=-1)?[codeString.substring(0, index)]:[codeString];
+        let remaining=(index!=-1)?codeString.substring(index+1):"";
+        if(remaining){
+            remaining=remaining.trim();
+        }
+        let args=remaining.split(",");
+        for(let arg of args){
+            ret.push(arg.trim());
+        }
+        return ret;
+    }
+
+    getCommandArray(){
+        return this.commandArray;
+    }
+
+    isParsed(){
+        return this.parsed;
+    }
+
+    setParsed(parsed){
+        this.parsed=parsed;
     }
 
     getLine(){

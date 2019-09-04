@@ -47,7 +47,7 @@ class Expression{
 
     constructor(type=Expression.TYPE_VAR, ownerBlock=null){
         this.type=type;
-        this.ownerBlock=block;
+        this.ownerBlock=ownerBlock;
     }
 
     getType(){
@@ -76,7 +76,7 @@ class VarExpression extends Expression{
     }
 
     evaluate(){
-        return this.getOwnerBlock().get(this.name);
+        return this.getOwnerBlock().get(this.name).evaluate();
     }
 }
 
@@ -124,13 +124,12 @@ class CommandExpression extends Expression{
 }
 
 class MainCommand extends CommandExpression{
-    constructor(subExpressions=null, ownerBlock=null){
+    constructor(ownerBlock=null){
         super("主程式", ownerBlock);
-        this.subExpressions=subExpressions;
     }
 
     executeCommand(){
-        if(this.subExpressions){
+        if(super.getSubExpressions()){
             for(let s of this.subExpressions){
                 s.executeCommand();
             }

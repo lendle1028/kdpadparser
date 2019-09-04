@@ -5,10 +5,10 @@ class PrintCommand extends CommandExpression{
     }
 
     executeCommand(){
-        console.log(this.message);
         if(document){
-            document.write(this.message);
+            document.write(this.message.evaluate());
         }
+        console.log(this.message.evaluate());
         return null;
     }
 }
@@ -26,15 +26,28 @@ class SetVarCommand extends CommandExpression{
 }
 
 class ConditionalCommand extends CommandExpression{
-    constructor(conditionExpression, ownerBlock=null, subExpressions=null, subConditions=null, elseCondition=null, name="假若"){
+    constructor(conditionExpression, ownerBlock=null, /*subExpressions=null, subConditions=null, elseCondition=null,*/name="假如"){
         super(name, ownerBlock);
         this.conditionExpression=conditionExpression;
-        if(subExpressions){
-            super.getSubExpressions().push(...subExpressions);
-        }
-        this.subConditions=subConditions;
-        this.elseCondition=elseCondition;
+        // if(subExpressions){
+        //     super.getSubExpressions().push(...subExpressions);
+        // }
+        this.subConditions=[];
+        this.elseCondition=null;;
     }
+
+    getSubConditions(){
+        return this.subConditions;
+    }
+
+    getElseCondition(){
+        return this.elseCondition;
+    }
+
+    setElseCondition(condition){
+        this.elseCondition=condition;
+    }
+
     /**
      * return true if the condition of this command
      * is true
@@ -62,17 +75,14 @@ class ConditionalCommand extends CommandExpression{
 }
 
 class SubConditionalCommand extends ConditionalCommand{
-    constructor(conditionExpression, ownerBlock=null, subExpressions=null, subConditions=null){
-        super(conditionExpression, ownerBlock, subExpressions, subConditions, null, "又假若");
+    constructor(conditionExpression, ownerBlock=null){
+        super(conditionExpression, ownerBlock, "又假如");
     }
 }
 
 class ElseConditionalCommand extends CommandExpression{
-    constructor(ownerBlock=null, subExpressions=null){
+    constructor(ownerBlock=null){
         super("否則", ownerBlock);
-        if(subExpressions){
-            super.getSubExpressions().push(...subExpressions);
-        }
     }
 
     executeCommand(){
