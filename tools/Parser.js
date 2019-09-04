@@ -40,19 +40,24 @@ class Parser{
 
     parseValueExpression(code, ownerBlock){
         code=code.trim();
-        if(code.indexOf("\"")==0){
-            return new ConstExpression(code.substring(1, code.length-1), ownerBlock);
-        }else if(!isNaN(parseFloat(code))){
-            return new ConstExpression(code, ownerBlock);
-        }else if(code.indexOf("+")==-1 && code.indexOf("-")==-1 &&
+        let exp=null;
+        let math=!(code.indexOf("+")==-1 && code.indexOf("-")==-1 &&
             code.indexOf("*")==-1 && code.indexOf("/")==-1 &&
             code.indexOf("=")==-1 && code.indexOf(">")==-1 &&
             code.indexOf("<")==-1 && code.indexOf("true")==-1 &&
-            code.indexOf("false")==-1){
-            return new VarExpression(code, ownerBlock);
+            code.indexOf("false")==-1);
+        if(code.indexOf("\"")==0){
+            exp=new ConstExpression(code.substring(1, code.length-1), ownerBlock);
+        }else if(!math && !isNaN(parseFloat(code))){
+            exp=new ConstExpression(code, ownerBlock);
+        }else if(!math){
+            exp=new VarExpression(code, ownerBlock);
         }
         //console.log("ownerBlock="+ownerBlock);
-        return new MathExpression(code, ownerBlock);
+        exp=new MathExpression(code, ownerBlock);
+        console.log(code);
+        console.log(exp);
+        return exp;
     }
 
     parseCodeTree(codeLines, rootNode){        
@@ -192,6 +197,35 @@ class AbstractCommandParser{
      * @param indexInChildNodes the index number of the corresponding parserTreeNode in the child node array of its parent node
      */
     parseCommandExpression(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
+        let command=this.parse(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock);
+        parserTreeNode.setParsed(true);
+        if(command==null){
+            return null;
+        }
+        if(parserTreeNode.getChildNodes() && parserTreeNode.getChildNodes().length>0){
+            let childBlock=new Block(ownerBlock);
+            let index=0;
+            for(let childNode of parserTreeNode.getChildNodes()){
+                if(childNode.isParsed()){
+                    index++;
+                    continue;
+                }
+                command.getSubExpressions().push(parentParser.parseCommandExpression(childNode, index++, childBlock));
+            }
+        }
+        return command;
+    }
+
+    /**
+     * sub classes should override this method
+     * @param {*} commandArray 
+     * @param {*} parentParser 
+     * @param {*} valueExpressionParser 
+     * @param {*} parserTreeNode 
+     * @param {*} indexInChildNodes 
+     * @param {*} ownerBlock 
+     */
+    parse(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
 
     }
 }

@@ -1,4 +1,4 @@
-class BaseCommandParser{
+class BaseCommandParser extends AbstractCommandParser{
     accepts(commandString){
         return "設定"==commandString || "假如"==commandString ||
             "又假如"==commandString ||
@@ -13,7 +13,7 @@ class BaseCommandParser{
      * @param parserTreeNode the corresponding parser tree node
      * @param indexInChildNodes the index number of the corresponding parserTreeNode in the child node array of its parent node
      */
-    parseCommandExpression(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
+    parse(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
         let command=null;
         if(commandArray[0]=="設定"){
             command=this.parseSetVar(commandArray, parentParser,valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock);
@@ -27,17 +27,6 @@ class BaseCommandParser{
             command=this.parsePrint(commandArray, parentParser,valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock);
         }else if(commandArray[0]=="主程式"){
             command=this.parseMain(commandArray, parentParser,valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock);
-        }
-        if(parserTreeNode.getChildNodes() && parserTreeNode.getChildNodes().length>0){
-            let childBlock=new Block(ownerBlock);
-            let index=0;
-            for(let childNode of parserTreeNode.getChildNodes()){
-                if(childNode.isParsed()){
-                    index++;
-                    continue;
-                }
-                command.getSubExpressions().push(parentParser.parseCommandExpression(childNode, index++, childBlock));
-            }
         }
         return command;
     }

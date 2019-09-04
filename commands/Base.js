@@ -25,6 +25,23 @@ class SetVarCommand extends CommandExpression{
     }
 }
 
+class LoopCommand extends CommandExpression{
+    constructor(loopCondition, ownerBlock){
+        super("重複", ownerBlock);
+        this.loopCondition=loopCondition;
+    }
+
+    executeCommand(){
+        while(this.loopCondition && this.loopCondition.evaluate()){
+            if(super.getSubExpressions()){
+                for(let exp of super.getSubExpressions()){
+                    exp.evaluate();
+                }
+            }
+        }
+    }
+}
+
 class ConditionalCommand extends CommandExpression{
     constructor(conditionExpression, ownerBlock=null, /*subExpressions=null, subConditions=null, elseCondition=null,*/name="假如"){
         super(name, ownerBlock);

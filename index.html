@@ -13,7 +13,7 @@
 
 <body>
     <script>
-        // let block=new Block();
+        let block=new Block();
         // let print=new PrintCommand("hello", block);
         // let print2=new PrintCommand("hello2", block);
         // let print3=new PrintCommand("hello3", block);
@@ -45,6 +45,7 @@
         //let node=parser.parse("主程式\n\t設定 x,10\n\t\t印出 123\n\t印出 \"abc\"");
         $.ajax("test1.txt").then(function(d){
             let node=parser.parse(d)[0];
+            console.log(node);
             //console.log(node);
             node.evaluate();
         });
