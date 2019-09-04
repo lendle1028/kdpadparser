@@ -5,6 +5,10 @@
     <script src="commands/Base.js"></script>
     <script src="tools/Parser.js"></script>
     <script src="tools/BaseCommandParser.js"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -39,9 +43,11 @@
         // cExp1.evaluate();
         let parser=new Parser();
         //let node=parser.parse("主程式\n\t設定 x,10\n\t\t印出 123\n\t印出 \"abc\"");
-        let node=parser.parse("主程式\n\t設定 x,10\n\t印出 x\n\t假如 x>5\n\t\t印出 \"A\"\n\t否則\n\t\t印出 \"B\"")[0];
-        console.log(node);
-        node.evaluate();
+        $.ajax("test1.txt").then(function(d){
+            let node=parser.parse(d)[0];
+            //console.log(node);
+            node.evaluate();
+        });
     </script>
 </body>
 
