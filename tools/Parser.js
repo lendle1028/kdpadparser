@@ -178,3 +178,20 @@ class ParserTreeNode{
         return str;
     }
 }
+
+class AbstractCommandParser{
+    accepts(commandString){
+        return false;
+    }
+
+    /**
+     * 
+     * @param {*} commandArray the the first element is always the command itself and the remaining elements are the args
+     * @param {*} valueExpressionParser 
+     * @param parserTreeNode the corresponding parser tree node
+     * @param indexInChildNodes the index number of the corresponding parserTreeNode in the child node array of its parent node
+     */
+    parseCommandExpression(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
+
+    }
+}
