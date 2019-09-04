@@ -41,7 +41,7 @@ class Parser{
     parseValueExpression(code, ownerBlock){
         code=code.trim();
         if(code.indexOf("\"")==0){
-            return new ConstExpression(code, ownerBlock);
+            return new ConstExpression(code.substring(1, code.length-1), ownerBlock);
         }else if(!isNaN(parseFloat(code))){
             return new ConstExpression(code, ownerBlock);
         }else if(code.indexOf("+")==-1 && code.indexOf("-")==-1 &&
