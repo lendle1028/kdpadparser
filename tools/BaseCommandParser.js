@@ -1,4 +1,11 @@
 class BaseCommandParser{
+    accepts(commandString){
+        return "設定"==commandString || "假如"==commandString ||
+            "又假如"==commandString ||
+            "否則"==commandString ||
+            "印出"==commandString ||
+            "主程式"==commandString;
+    }
     /**
      * 
      * @param {*} commandArray the the first element is always the command itself and the remaining elements are the args

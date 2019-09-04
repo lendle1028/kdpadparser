@@ -1,7 +1,13 @@
 class Parser{
     constructor(){
         this.block=new Block();
-        this.baseCommandParser=new BaseCommandParser();
+        this.commandParsers=[];
+        //this.baseCommandParser=new BaseCommandParser();
+        this.registerCommandParser(new BaseCommandParser());
+    }
+
+    registerCommandParser(commandParser){
+        this.commandParsers.push(commandParser);
     }
 
     /**
@@ -23,9 +29,13 @@ class Parser{
     }
 
     parseCommandExpression(codeTreeNode, indexInChildNodes, ownerBlock){
-        return this.baseCommandParser.parseCommandExpression(
-            codeTreeNode.getCommandArray(), this, this, codeTreeNode, indexInChildNodes, ownerBlock
-        );
+        for(let p of this.commandParsers){
+            if(p.accepts(codeTreeNode.getCommandArray()[0])){
+                return p.parseCommandExpression(
+                    codeTreeNode.getCommandArray(), this, this, codeTreeNode, indexInChildNodes, ownerBlock
+                );        
+            }
+        }
     }
 
     parseValueExpression(code, ownerBlock){
