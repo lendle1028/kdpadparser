@@ -25,6 +25,10 @@ class BaseCommandParser{
             let childBlock=new Block(ownerBlock);
             let index=0;
             for(let childNode of parserTreeNode.getChildNodes()){
+                if(childNode.isParsed()){
+                    index++;
+                    continue;
+                }
                 command.getSubExpressions().push(parentParser.parseCommandExpression(childNode, index++, childBlock));
             }
         }
@@ -44,7 +48,7 @@ class BaseCommandParser{
     }
 
     parseIf(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
-        let command=new ConditionalCommand(valueExpressionParser.parseValueExpression(commandArray[1]), ownerBlock);
+        let command=new ConditionalCommand(valueExpressionParser.parseValueExpression(commandArray[1], ownerBlock), ownerBlock);
         parserTreeNode.setParsed(true);
         let parentNode=parserTreeNode.getParentNode();
         for(let i=indexInChildNodes+1; i<parentNode.getChildNodes().length; i++){

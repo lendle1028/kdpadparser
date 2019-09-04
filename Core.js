@@ -151,15 +151,14 @@ class MathExpression extends Expression{
         //replace variables to their values
         let newExpression=this.mathExpression;
         for(let v of super.getOwnerBlock().getAllVariableNames()){
-            let value=super.getOwnerBlock().get(v);
+            let value=super.getOwnerBlock().get(v).evaluate();
             if(typeof(value)=="string"){
-                newExpression=newExpression.replace(v, "\""+super.getOwnerBlock().get(v)+"\"");
+                newExpression=newExpression.replace(v, "\""+value+"\"");
             }else{
-                newExpression=newExpression.replace(v, super.getOwnerBlock().get(v));
+                newExpression=newExpression.replace(v, value);
             }
             
         }
-        //console.log(newExpression);
         return eval(newExpression);
     }
 }

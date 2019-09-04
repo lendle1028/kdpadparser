@@ -40,6 +40,7 @@ class Parser{
             code.indexOf("<")==-1){
             return new VarExpression(code, ownerBlock);
         }
+        console.log("ownerBlock="+ownerBlock);
         return new MathExpression(code, ownerBlock);
     }
 
