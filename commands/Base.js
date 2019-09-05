@@ -21,7 +21,8 @@ class SetVarCommand extends CommandExpression{
     }
 
     executeCommand(){
-        this.ownerBlock.set(this.varName, this.value);
+        this.ownerBlock.set(this.varName, 
+            new ConstExpression((this.value.evaluate)?this.value.evaluate():this.value, super.getOwnerBlock() ));
     }
 }
 

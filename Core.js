@@ -153,9 +153,11 @@ class MathExpression extends Expression{
         for(let v of super.getOwnerBlock().getAllVariableNames()){
             let value=super.getOwnerBlock().get(v);
             if(value==this){
+                console.log(v);
+                console.log(value);
                 continue;//skip self
             }else{
-                if(value.evaluate()){
+                if(value.evaluate){
                     value=value.evaluate();
                 }
             }
