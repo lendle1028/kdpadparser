@@ -151,7 +151,14 @@ class MathExpression extends Expression{
         //replace variables to their values
         let newExpression=this.mathExpression;
         for(let v of super.getOwnerBlock().getAllVariableNames()){
-            let value=super.getOwnerBlock().get(v).evaluate();
+            let value=super.getOwnerBlock().get(v);
+            if(value==this){
+                continue;//skip self
+            }else{
+                if(value.evaluate()){
+                    value=value.evaluate();
+                }
+            }
             if(typeof(value)=="string"){
                 newExpression=newExpression.replace(v, "\""+value+"\"");
             }else{

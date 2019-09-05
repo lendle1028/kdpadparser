@@ -38,7 +38,7 @@ class BaseCommandParser extends AbstractCommandParser{
     }
 
     parseSetVar(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
-        let command=new SetVarCommand(commandArray[1], valueExpressionParser.parseValueExpression(commandArray[2]), ownerBlock);
+        let command=new SetVarCommand(commandArray[1], valueExpressionParser.parseValueExpression(commandArray[2], ownerBlock), ownerBlock);
         parserTreeNode.setParsed(true);
         return command;
     }

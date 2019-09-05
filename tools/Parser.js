@@ -46,17 +46,16 @@ class Parser{
             code.indexOf("=")==-1 && code.indexOf(">")==-1 &&
             code.indexOf("<")==-1 && code.indexOf("true")==-1 &&
             code.indexOf("false")==-1);
+        
         if(code.indexOf("\"")==0){
             exp=new ConstExpression(code.substring(1, code.length-1), ownerBlock);
         }else if(!math && !isNaN(parseFloat(code))){
             exp=new ConstExpression(code, ownerBlock);
         }else if(!math){
             exp=new VarExpression(code, ownerBlock);
+        }else{
+            exp=new MathExpression(code, ownerBlock);
         }
-        //console.log("ownerBlock="+ownerBlock);
-        exp=new MathExpression(code, ownerBlock);
-        console.log(code);
-        console.log(exp);
         return exp;
     }
 
