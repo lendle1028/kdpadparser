@@ -16,12 +16,13 @@ class Parser{
     parse(codeString){
         let codeStringList=codeString.split(/\n/);
         let emptyRoot=new ParserTreeNode(null);
-        let codeTree=this.parseCodeTree(codeStringList, emptyRoot);
-        //console.log(codeTree.toString());
+        let codeTree=this.parseCodeTree(codeStringList, emptyRoot, -1);
+        //console.log(emptyRoot.toString());
         let ret=new Array();
         let index=0;
         for(let c of emptyRoot.getChildNodes()){
-            let exp=this.parseCommandExpression(c, index++, this.block);
+            let subBlock=new Block(this.block);
+            let exp=this.parseCommandExpression(c, index++, subBlock);
             ret.push(exp);
         }
         //console.log(ret);
@@ -46,11 +47,10 @@ class Parser{
             code.indexOf("=")==-1 && code.indexOf(">")==-1 &&
             code.indexOf("<")==-1 && code.indexOf("true")==-1 &&
             code.indexOf("false")==-1);
-        
         if(code.indexOf("\"")==0){
             exp=new ConstExpression(code.substring(1, code.length-1), ownerBlock);
         }else if(!math && !isNaN(parseFloat(code))){
-            exp=new ConstExpression(code, ownerBlock);
+            exp=new ConstExpression(parseFloat(code), ownerBlock);
         }else if(!math){
             exp=new VarExpression(code, ownerBlock);
         }else{
@@ -59,16 +59,16 @@ class Parser{
         return exp;
     }
 
-    parseCodeTree(codeLines, rootNode){        
-        let currentLine=codeLines[0];
-        if(currentLine.trim().length==0){
-            return null;
-        }
-        let node=new ParserTreeNode(currentLine.trim());
-        rootNode.getChildNodes().push(node);
-        node.setParentNode(rootNode);
-        let level=this.countPrefixWhiteSpaces(currentLine);
-        codeLines.splice(0, 1);
+    parseCodeTree(codeLines, rootNode, currentLevel){        
+        // let currentLine=codeLines[0];
+        // if(currentLine.trim().length==0){
+        //     return null;
+        // }
+        // let node=new ParserTreeNode(currentLine.trim());
+        // rootNode.getChildNodes().push(node);
+        // node.setParentNode(rootNode);
+        // let level=this.countPrefixWhiteSpaces(currentLine);
+        // codeLines.splice(0, 1);
         while(codeLines.length>0){
             let nextLine=codeLines[0];
             if(nextLine.trim().length==0){
@@ -76,17 +76,30 @@ class Parser{
                 continue;
             }
             let nextLevel=this.countPrefixWhiteSpaces(nextLine);
-            if(nextLevel>level){
+            nextLine=nextLine.trim();
+            //console.log(nextLine+":"+rootNode.getLine()+":"+currentLevel+":"+nextLevel+":"+nextLine.indexOf("\n"));
+            if(nextLevel>currentLevel){
+                //this is a child node
+                let node=new ParserTreeNode(nextLine);
+                rootNode.getChildNodes().push(node);
+                node.setParentNode(rootNode);
                 //go to the next level
-                this.parseCodeTree(codeLines, node);
-            }else if(nextLevel==level){
-                this.parseCodeTree(codeLines, rootNode);
+                codeLines.splice(0, 1);//consume one line
+                this.parseCodeTree(codeLines, node, nextLevel);
             }else{
-                //this is the end of this block
                 break;
             }
+            // }else if(nextLevel==level){
+            //     this.parseCodeTree(codeLines, rootNode);
+            // }else{
+            //     if(rootNode.getLine().indexOf("否則")!=-1){
+            //         console.log("123"+nextLine);
+            //     }
+            //     //this is the end of this block
+            //     break;
+            // }
         }
-        return node;
+        return;
     }
 
     countPrefixWhiteSpaces(line){
@@ -96,6 +109,8 @@ class Parser{
                 count++;
             }else if(c=='\t'){
                 count=count+4;
+            }else{
+                break;
             }
         }
         return count;
@@ -202,14 +217,15 @@ class AbstractCommandParser{
             return null;
         }
         if(parserTreeNode.getChildNodes() && parserTreeNode.getChildNodes().length>0){
-            let childBlock=new Block(ownerBlock);
+            //let childBlock=new Block(ownerBlock);
             let index=0;
             for(let childNode of parserTreeNode.getChildNodes()){
                 if(childNode.isParsed()){
                     index++;
                     continue;
                 }
-                command.getSubExpressions().push(parentParser.parseCommandExpression(childNode, index++, childBlock));
+                //command.getSubExpressions().push(parentParser.parseCommandExpression(childNode, index++, childBlock));
+                command.getSubExpressions().push(parentParser.parseCommandExpression(childNode, index++, ownerBlock));
             }
         }
         return command;
