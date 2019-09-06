@@ -5,9 +5,9 @@ class PrintCommand extends CommandExpression{
     }
 
     executeCommand(){
-        if(document){
+        /*if(document){
             document.write(this.message.evaluate());
-        }
+        }*/
         console.log(this.message.evaluate());
         return null;
     }
