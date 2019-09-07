@@ -1,3 +1,9 @@
+function sleep(ms) {
+    return new Promise((resolve) =>
+      setTimeout(resolve, ms)
+    );
+}
+
 class Block{
     static UNDEFINED=new Object();
     constructor(parentBlock=null){
@@ -129,6 +135,7 @@ class MainCommand extends CommandExpression{
     }
 
     executeCommand(){
+        let self=this;
         if(super.getSubExpressions()){
             for(let s of this.subExpressions){
                 s.executeCommand();

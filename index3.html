@@ -6,6 +6,8 @@
     <script src="tools/BaseCommandParser.js"></script>
     <script src="plugins/plot/command.js"></script>
     <script src="plugins/plot/parser.js"></script>
+    <script src="plugins/mapgame/command.js"></script>
+    <script src="plugins/mapgame/parser.js"></script>
     <script
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
@@ -32,16 +34,15 @@
             }
             table.appendChild(tr);
         }
-        $("#cell_5_3").css("background", "blue");
-        console.log($("#cell_5_3").get(0).getBoundingClientRect());
+        let rect=$("#cell_0_0").get(0).getBoundingClientRect();
         let image=document.createElement("img");
         $(image).attr("id", "player");
-        $(image).attr("cell_x", "5");
-        $(image).attr("cell_y", "3");
+        $(image).attr("cell_x", "0");
+        $(image).attr("cell_y", "0");
         $(image).attr("src", "https://pic.pimg.tw/yide168/1472052377-2119381680.png");
         $(image).css("position", "absolute");
-        $(image).css("top", "109px");
-        $(image).css("left", "259px");
+        $(image).css("top", rect.top+"px");
+        $(image).css("left", rect.left+"px");
         $(image).css("width", "40px");
         $(image).css("height", "25px");
         $(document.body).append($(image));
@@ -49,9 +50,12 @@
         ////////////////
         let parser=new Parser();
         parser.registerCommandParser(new PlotCommandParser());
-        $.ajax("test2.txt").then(function(d){
-            let node=parser.parse(d)[0];
-            node.evaluate();
+        parser.registerCommandParser(new MapGameCommandParser());
+        $.ajax("test3.txt").then(function(d){
+            (async function(){
+                let node=parser.parse(d)[0];
+                node.evaluate();
+            })();
         });
     </script>
 </body>
