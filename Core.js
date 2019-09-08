@@ -4,6 +4,74 @@ function sleep(ms) {
     );
 }
 
+class GlobalContext{
+    constructor(){
+        this.interval=10;
+        this.executionQueue=[];
+    }
+
+    setInterval(interval){
+        this.interval=interval;
+    }
+
+    submitCommand(command){
+        this.executionQueue.push(command);
+    }
+
+    insertCommands(commandArray){
+        this.executionQueue=[...commandArray, ...this.executionQueue];
+    }
+
+    startExecution(){
+        let self=this;
+        setTimeout(function(){
+            self._execute();
+        }, this.interval);
+    }
+
+    _execute(){
+        let self=this;
+        if(this.executionQueue.length>0){
+            let command=this.executionQueue[0];
+            //console.log(command);
+            this.executionQueue.splice(0, 1);
+            command.evaluate();
+            if(command.getName()!="停止"){
+                setTimeout(function(){
+                    self._execute();
+                }, this.interval);
+            }
+        }else{
+            setTimeout(function(){
+                self._execute();
+            }, this.interval);
+        }
+        // this.count++;
+        // if(this.count>100){
+        //     return;
+        // }
+        // console.log(this.count);
+        // let self=this;
+        // if(this.executionQueue.length>0){
+        //     let command=this.executionQueue[0];
+        //     console.log(command);
+        //     this.executionQueue.splice(0, 1);
+        //     command.evaluate();
+        //     if(command.getName()!="停止"){
+        //         setTimeout(function(){
+        //             self._execute();
+        //         }, this.interval);
+        //     }
+        // }else{
+        //     setTimeout(function(){
+        //         self._execute();
+        //     }, this.interval);
+        // }
+    }
+}
+
+let globalContext=new GlobalContext();
+
 class Block{
     static UNDEFINED=new Object();
     constructor(parentBlock=null){
@@ -102,6 +170,11 @@ class CommandExpression extends Expression{
         super(Expression.TYPE_COMMAND, ownerBlock);
         this.name=name;
         this.subExpressions=[];
+        this.globalContext=globalContext;
+    }
+
+    getGlobalContext(){
+        return this.globalContext;
     }
 
     getName(){
@@ -136,11 +209,22 @@ class MainCommand extends CommandExpression{
 
     executeCommand(){
         let self=this;
+        this.getGlobalContext().startExecution();
         if(super.getSubExpressions()){
             for(let s of this.subExpressions){
-                s.executeCommand();
+                this.getGlobalContext().submitCommand(s);
+                //s.executeCommand();
             }
         }
+    }
+}
+
+class StopCommand extends CommandExpression{
+    constructor(ownerBlock=null){
+        super("停止", ownerBlock);
+    }
+
+    executeCommand(){
     }
 }
 

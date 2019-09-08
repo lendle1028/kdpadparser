@@ -5,7 +5,8 @@ class BaseCommandParser extends AbstractCommandParser{
             "否則"==commandString ||
             "印出"==commandString ||
             "主程式"==commandString ||
-            "重複"==commandString;
+            "重複"==commandString ||
+            "停止"==commandString;
     }
     /**
      * 
@@ -30,12 +31,20 @@ class BaseCommandParser extends AbstractCommandParser{
             command=this.parseMain(commandArray, parentParser,valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock);
         }else if(commandArray[0]=="重複"){
             command=this.parseLoop(commandArray, parentParser,valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock);
+        }else if(commandArray[0]=="停止"){
+            command=this.parseStop(commandArray, parentParser,valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock);
         }
         return command;
     }
 
     parseMain(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
         let command=new MainCommand(ownerBlock);
+        parserTreeNode.setParsed(true);
+        return command;
+    }
+
+    parseStop(commandArray, parentParser, valueExpressionParser, parserTreeNode, indexInChildNodes, ownerBlock){
+        let command=new StopCommand(ownerBlock);
         parserTreeNode.setParsed(true);
         return command;
     }

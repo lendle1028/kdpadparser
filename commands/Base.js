@@ -33,12 +33,17 @@ class LoopCommand extends CommandExpression{
     }
 
     executeCommand(){
-        while(this.loopCondition && this.loopCondition.evaluate()){
+        if(this.loopCondition && this.loopCondition.evaluate()){
+            let array=[];
             if(super.getSubExpressions()){
                 for(let exp of super.getSubExpressions()){
-                    exp.evaluate();
+                    //super.getGlobalContext().submitCommand(exp);
+                    array.push(exp);
+                    //exp.evaluate();
                 }
             }
+            array.push(this);
+            super.getGlobalContext().insertCommands(array);
         }
     }
 }
@@ -66,29 +71,34 @@ class ConditionalCommand extends CommandExpression{
         this.elseCondition=condition;
     }
 
-    /**
-     * return true if the condition of this command
-     * is true
-     */
+    isConditionMeet(){
+        return this.conditionExpression!=null && this.conditionExpression.evaluate();
+    }
+
     executeCommand(){
-        if(this.conditionExpression!=null && this.conditionExpression.evaluate()){
+        if(this.isConditionMeet()){
             if(super.getSubExpressions()){
+                let array=[];
                 for(let exp of super.getSubExpressions()){
-                    exp.executeCommand();
+                    //exp.executeCommand();
+                    array.push(exp);
                 }
+                super.getGlobalContext().insertCommands(array);
             }
             return true;
         }else if(this.subConditions){
             for(let s of this.subConditions){
-                if(s.executeCommand()){
-                    return false;
+                if(s.isConditionMeet()){
+                    super.getGlobalContext().insertCommands([s]);
+                    return;
                 }
             }
         }
         if(this.elseCondition){
-            this.elseCondition.executeCommand();
+            super.getGlobalContext().insertCommands([this.elseCondition]);
+            //this.elseCondition.executeCommand();
+            return;
         }
-        return false;
     }
 }
 
@@ -104,9 +114,13 @@ class ElseConditionalCommand extends CommandExpression{
     }
 
     executeCommand(){
+        let array=[];
         for(let exp of super.getSubExpressions()){
-            exp.executeCommand();
+            array.push(exp);
+            //super.getGlobalContext().submitCommand(exp);
+            //exp.executeCommand();
         }
+        super.getGlobalContext().insertCommands(array);
         return true;
     }
 }
