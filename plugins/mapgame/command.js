@@ -41,7 +41,7 @@ class SleepCommand extends CommandExpression{
         this.seconds=seconds;
     }
 
-    async executeCommand(){
-        await sleep(this.seconds.evaluate()*1000);
+    executeCommand(){
+        this.getGlobalContext().wait(this.seconds.evaluate()*1000);
     }
 }

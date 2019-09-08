@@ -1,17 +1,16 @@
-function sleep(ms) {
-    return new Promise((resolve) =>
-      setTimeout(resolve, ms)
-    );
-}
-
 class GlobalContext{
     constructor(){
         this.interval=10;
+        this.nextInterval=10;
         this.executionQueue=[];
     }
 
     setInterval(interval){
         this.interval=interval;
+    }
+
+    wait(waitInterval){
+        this.nextInterval=waitInterval;
     }
 
     submitCommand(command){
@@ -36,15 +35,18 @@ class GlobalContext{
             //console.log(command);
             this.executionQueue.splice(0, 1);
             command.evaluate();
+            //console.log(command.getName()+":"+this.nextInterval);
             if(command.getName()!="停止"){
                 setTimeout(function(){
                     self._execute();
-                }, this.interval);
+                }, this.nextInterval);
             }
+            this.nextInterval=this.interval;
         }else{
             setTimeout(function(){
                 self._execute();
-            }, this.interval);
+            }, this.nextInterval);
+            this.nextInterval=this.interval;
         }
         // this.count++;
         // if(this.count>100){
